@@ -1,0 +1,16 @@
+[project]
+name = "data-collector"
+version = "1.0.1"
+description = "Live-Data Collection "
+dependencies = [
+    "numpy",
+    "pandas",
+    "pytest"
+]
+
+[project.scripts]
+data-collector = "data_collector.main:main"
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
