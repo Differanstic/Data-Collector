@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 from data_collector.logger.csv_logger import csv_logger
 from data_collector.symbol_management.fyers_symbols import fyers_symbols
 import threading
+from data_collector.discord_messager import send_channel_message
 import sys
 import os
 
@@ -17,6 +18,7 @@ class fyers_ws:
         self.fyers = fyers
         self.logger = csv_logger(base_path=base_path, num_workers=6)
         self.fs = fyers_symbols(self.fyers,load_stock_fno=1)
+        send_channel_message("Fetching Symbols")
         self.cash_market_symbol = self.fs.load_symbols()
         self.depth_symbols = {}
         for symbol in self.cash_market_symbol:
@@ -39,7 +41,7 @@ class fyers_ws:
                 elapsed = now - last_message_time
 
                 if elapsed > timedelta(seconds=5):
-                    #discord_messager.send_update_message(f"⚠️ Inactivity detected since {last_message_time}")
+                    send_channel_message(f"⚠️ Inactivity detected since {last_message_time}")
                     time.sleep(10)
                     continue
 
@@ -48,7 +50,7 @@ class fyers_ws:
                     print("Market closed — unsubscribing...")
                     self.f.unsubscribe(symbols=list(self.cash_market_symbol.keys()), data_type='SymbolUpdate')
                     self.f.unsubscribe(symbols=list(self.depth_symbols.keys()), data_type='MarketDepth')
-                    #discord_messager.send_update_message("Share Market Closed!")
+                    send_channel_message("Share Market Closed!")
                     self.f.close_connection()
                     self.logger.flush_all()
                     os._exit(0)
@@ -90,8 +92,6 @@ class fyers_ws:
             ]
             cols = ['timestamp'] + depth_cols
             data = [[timestamp] + [message.get(k, None) for k in depth_cols]]
-
-        print(data)
         if data:
 
             self.logger.save_async(self.cash_market_symbol.get(message['symbol'], 'unknown.csv'), data, cols, is_market_depth=symbol_type == 'dp')
@@ -110,7 +110,7 @@ class fyers_ws:
 
 
     def _onopen(self):
-        #discord_messager.send_update_message(f"✅ Data collection started for {len(symbols)} symbols.")
+        send_channel_message(f"✅ Data collection started for {len(self.cash_market_symbol) + len(self.depth_symbols)} symbols.")
         self.f.subscribe(symbols=list(self.cash_market_symbol.keys()), data_type="SymbolUpdate")
         self.f.subscribe(symbols=list(self.depth_symbols.keys()), data_type="DepthUpdate")
         self.f.keep_running()
