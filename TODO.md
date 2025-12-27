@@ -1,8 +1,10 @@
 # Project TODOs
 
 ## Feature Adding
-- [ ] Add Discord Messaging API.
-- [ ] TBT Market Depth On NSE.
+- [] TBT Market Depth On NSE.
+
+- [x] Add Discord Messaging API.
+
   
 ## Issue Handling
 - [ ] CSV Logger Fall Back Logic.

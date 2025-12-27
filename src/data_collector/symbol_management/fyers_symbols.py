@@ -81,7 +81,7 @@ class fyers_symbols:
         strikes = {}      
         fno_stocks = load_csv("nse-fno-stocks.csv")['symbol']
         for symbol in fno_stocks:
-            strikes = strikes  | self.get_option_chain_strikes(symbol, 1)
+            strikes = strikes  | self.get_option_chain_strikes(symbol, strike_count=3)
         return strikes
     
 
