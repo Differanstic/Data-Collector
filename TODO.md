@@ -1,8 +1,9 @@
 # Project TODOs
 
 ## Feature Adding
-- [] TBT Market Depth On NSE.
-
+- [ ] Add Stock FNO Symbol to Stock Symbols
+- [ ] TBT Market Depth On NSE.
+- [ ] Commodities Symbol
 - [x] Add Discord Messaging API.
 
   

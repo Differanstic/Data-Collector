@@ -25,6 +25,12 @@ def test_load_symbols():
     symbols = fs.load_symbols()
     assert isinstance(symbols,dict)
     
-
+def test_stock_symbols():
+    stocks = fs.get_stock_symbols()
+    print(stocks)
+    print(len(stocks))
+    assert isinstance(stocks,dict)
+    
+test_stock_symbols()
 
     

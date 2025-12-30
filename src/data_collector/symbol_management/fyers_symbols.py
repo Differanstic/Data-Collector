@@ -8,8 +8,6 @@ class fyers_symbols:
     
     def __init__(self,fyers:fyers_util,load_index=True,load_futures=True,load_index_options=True,load_stocks=True,load_stock_fno=True):
     
-        
-        
         self.yymm = datetime.now().strftime("%y%b").upper()
         self.date = datetime.now().strftime("%d%B%y").upper()
         
@@ -35,10 +33,12 @@ class fyers_symbols:
         f'NSE:BANKNIFTY{self.yymm}FUT': f'/{self.date}/NSE/FUTURES/NIFTYBANK.csv',
         f'BSE:SENSEX{self.yymm}FUT': f'/{self.date}/BSE/FUTURES/SENSEX.csv'
         }
-        fno_stocks = load_csv("nse-fno-stocks.csv")['symbol']
-        for s in fno_stocks:
-            symbol[f'NSE:{s}{self.yymm}FUT'] = f'/{self.date}/NSE/FUTURES/{s}.csv'
         
+        # Stock Futures
+        #fno_stocks = load_csv("nse-fno-stocks.csv")['symbol']
+        #for s in fno_stocks:
+        #    symbol[f'NSE:{s}{self.yymm}FUT'] = f'/{self.date}/NSE/FUTURES/{s}.csv'
+        #
         return symbol
     
     def get_option_chain_strikes(self, symbol, strike_count=10):
@@ -73,7 +73,13 @@ class fyers_symbols:
             symbols[f"NSE:{row['Symbol']}-{row['Series']}"] = (
                 f"/{self.date}/NSE/EQUITY/{row['Symbol'].upper()}.csv"
             )
-    
+        fno_stocks = load_csv("nse-fno-stocks.csv")['symbol']
+        for s in fno_stocks:
+            x = s.split(':')[1].split('-')[0]
+            if '-EQ' in s:
+                symbols[s] = "/"+self.date+"/NSE/EQUITY/"+x.upper()+".csv"
+        
+
         return symbols
     
     
@@ -87,16 +93,21 @@ class fyers_symbols:
 
     def load_symbols(self):
         symbols = {}
+        
         if self.load_index:
             symbols.update(self.get_index_symbols())
+            
         if self.load_futures:
             symbols.update(self.get_futures_symbols())
+            
         if self.load_index_options:
             symbols.update(self.get_option_chain_strikes("NSE:NIFTY50-INDEX", 10))
             symbols.update(self.get_option_chain_strikes("NSE:BANKNIFTY-INDEX", 10))
             symbols.update(self.get_option_chain_strikes("BSE:SENSEX-INDEX", 10))
+            
         if self.load_stocks:
             symbols.update(self.get_stock_symbols())
+            
         if self.load_stock_fno:
             symbols.update(self.get_stock_fno())
         return symbols
