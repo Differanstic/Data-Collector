@@ -22,8 +22,8 @@ def test_get_stock_fno():
     assert isinstance(stocks,dict)
     
 def test_load_symbols():
-    symbols = fs.load_symbols()
-    assert isinstance(symbols,dict)
+    symbols,market_depth_symbols = fs.load_symbols()
+    assert isinstance(symbols,dict) and len(symbols | market_depth_symbols) < 5000
     
 def test_stock_symbols():
     stocks = fs.get_stock_symbols()
@@ -31,6 +31,15 @@ def test_stock_symbols():
     print(len(stocks))
     assert isinstance(stocks,dict)
     
-test_stock_symbols()
+def debug_load_symbols():
+    symbols,market_depth_symbols = fs.load_symbols()
+    print(symbols)
+    print(market_depth_symbols)
+    print(len(symbols | market_depth_symbols),"/",5000)
+    
+
+
+debug_load_symbols()
+
 
     

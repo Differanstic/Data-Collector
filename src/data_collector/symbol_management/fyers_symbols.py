@@ -79,7 +79,6 @@ class fyers_symbols:
             if '-EQ' in s:
                 symbols[s] = "/"+self.date+"/NSE/EQUITY/"+x.upper()+".csv"
         
-
         return symbols
     
     
@@ -93,21 +92,31 @@ class fyers_symbols:
 
     def load_symbols(self):
         symbols = {}
+        market_depth_symbols = {}
         
         if self.load_index:
             symbols.update(self.get_index_symbols())
             
         if self.load_futures:
-            symbols.update(self.get_futures_symbols())
+            futures = self.get_futures_symbols()
+            symbols.update(futures)
+            market_depth_symbols.update(futures)
+            
             
         if self.load_index_options:
-            symbols.update(self.get_option_chain_strikes("NSE:NIFTY50-INDEX", 10))
-            symbols.update(self.get_option_chain_strikes("NSE:BANKNIFTY-INDEX", 10))
-            symbols.update(self.get_option_chain_strikes("BSE:SENSEX-INDEX", 10))
+            nifty_options = self.get_option_chain_strikes("NSE:NIFTY50-INDEX", 10)
+            banknifty_options = self.get_option_chain_strikes("NSE:BANKNIFTY-INDEX", 10)
+            sensex_options = self.get_option_chain_strikes("BSE:SENSEX-INDEX", 10)
             
+            symbols.update(nifty_options | banknifty_options | sensex_options)
+            market_depth_symbols.update(nifty_options | banknifty_options | sensex_options)      
+        
         if self.load_stocks:
-            symbols.update(self.get_stock_symbols())
-            
+            stock_symbols = self.get_stock_symbols()
+            symbols.update(stock_symbols)
+            market_depth_symbols.update(stock_symbols)
+        
         if self.load_stock_fno:
             symbols.update(self.get_stock_fno())
-        return symbols
+            
+        return symbols,market_depth_symbols

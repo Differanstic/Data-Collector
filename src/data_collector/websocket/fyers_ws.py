@@ -18,12 +18,9 @@ class fyers_ws:
         self.fyers = fyers
         self.logger = csv_logger(base_path=base_path, num_workers=6)
         self.fs = fyers_symbols(self.fyers,load_stock_fno=1)
+        
         send_channel_message("Fetching Symbols")
-        self.cash_market_symbol = self.fs.load_symbols()
-        self.depth_symbols = {}
-        for symbol in self.cash_market_symbol:
-            if not 'index' in symbol.lower():
-                self.depth_symbols[symbol] = self.cash_market_symbol[symbol]
+        self.cash_market_symbol,self.depth_symbols = self.fs.load_symbols()
         print("Total Symbols:",len(self.cash_market_symbol))
         print("Total Depth Symbols:",len(self.depth_symbols))
         
