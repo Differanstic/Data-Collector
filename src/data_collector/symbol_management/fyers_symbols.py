@@ -120,3 +120,15 @@ class fyers_symbols:
             symbols.update(self.get_stock_fno())
             
         return symbols,market_depth_symbols
+    
+    ############################################################
+    ############################################################
+    # OI Symbols
+    def load_oi_symbols(self):
+        symbols = list(self.get_index_symbols().keys())
+        symbols.extend(load_csv("nse-fno-stocks.csv")['symbol'])
+        
+        return symbols
+        
+        
+    
