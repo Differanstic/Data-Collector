@@ -36,6 +36,7 @@ class oi_collector():
         time_to_expire = self._calc_time_to_expire(data['data']['expiryData'][0]['expiry'])
         df = pd.DataFrame(data['data']['optionsChain']).drop(columns=['ask','bid','description','fp','fpch','fpchp','fyToken'])
         df['expiry'] = time_to_expire
+        df['timestamp'] = datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")
         return df,time_to_expire
     
     def _load_symbols(self):
@@ -45,7 +46,7 @@ class oi_collector():
     def _fetch_all_symbol_oi(self):
         for symbol in self.symbols:
             try:
-                strikes = 10 if '-INDEX' in symbol else 3
+                strikes = 10 if '-INDEX' in symbol else 5
                 df,t = self.load_option_chain(symbol, strikes)
                 symbol = symbol.split(':')[1].split('-')[0]
                 self.logger.save_option_chain(df, symbol)
