@@ -56,9 +56,9 @@ class oi_collector():
     
     def start(self):
         send_channel_message("OI Collector Started...")
-        market_open = time(9, 0)
+        market_open = time(8, 55)
         market_close = time(15, 30)
-        while market_open< datetime.now().time() < market_close:
+        while market_open <= datetime.now().time() < market_close:
             self._fetch_all_symbol_oi()
         
         send_channel_message("OI Collector Shutting Down...")
