@@ -46,11 +46,11 @@ class oi_collector():
     def _fetch_all_symbol_oi(self):
         for symbol in self.symbols:
             try:
-                strikes = 10 if '-INDEX' in symbol else 5
+                strikes = 10 if '-INDEX' in symbol else 6
                 df,t = self.load_option_chain(symbol, strikes)
                 symbol = symbol.split(':')[1].split('-')[0]
                 self.logger.save_option_chain(df, symbol)
-                sleep(1)
+                sleep(0.5)
             except Exception as e:
                 print(symbol,e)
     
